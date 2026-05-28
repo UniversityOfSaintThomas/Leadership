@@ -43,7 +43,7 @@ const GRAY_LIGHT = "#f4f2f7";
 
 const TABS = [
   { id: "overview", label: "Program Overview" },
-  { id: "roadmap", label: "Course Roadmap" },
+  { id: "roadmap", label: "Program Roadmap" },
   { id: "residency", label: "Summer Residency" },
   { id: "milestones", label: "Doctoral Milestones" },
   { id: "dissertation", label: "Dissertation Resources" },
@@ -54,7 +54,7 @@ const TABS = [
 /* ---------- Searchable content index (for the search function) ---------- */
 const SEARCH_INDEX = [
   { tab: "overview", title: "Program Overview", text: "Ed.D. Educational Leadership and Learning 4-5 year journey 66 credits 45 core 21 elective welcome" },
-  { tab: "roadmap", title: "Course Roadmap — Four & Five Year Plans", text: "EDLD 916 917 918 919 889 904 902 920 921 905 922 923 924 925 915 dissertation hours residency electives timeline" },
+  { tab: "roadmap", title: "Program Roadmap — Four & Five Year Plans", text: "EDLD 916 917 918 919 889 904 902 920 921 905 922 923 924 925 915 dissertation hours residency electives timeline" },
   { tab: "residency", title: "Summer Residency", text: "doctoral orientation May 16 2026 first-year residency July EDLD 916 917 second-year EDLD 889 in-person mandatory" },
   { tab: "milestones", title: "Doctoral Milestones", text: "prospectus approval proposal defense dissertation defense committee terminal degrees double-blind review" },
   { tab: "dissertation", title: "Dissertation Resources", text: "proposal defense agenda dissertation outline chapters introduction literature review methodology findings rubric table of contents APA" },
@@ -195,7 +195,7 @@ function OverviewTab() {
 }
 
 /* ====================================================================== */
-/*  TAB 2 — Course Roadmap                                                */
+/*  TAB 2 — Program Roadmap                                                */
 /* ====================================================================== */
 
 const FOUR_YEAR = [
@@ -365,7 +365,7 @@ function RoadmapTab() {
   const [plan, setPlan] = useState("four");
   return (
     <div>
-      <SectionTitle kicker="Course Roadmap">Your Academic Journey</SectionTitle>
+      <SectionTitle kicker="Program Roadmap">Your Academic Journey</SectionTitle>
 
       <Callout tone="info">
         Both 4-year and 5-year plans are available. Choose the pace that works best for
@@ -879,7 +879,7 @@ const FAQ = [
   },
   {
     q: "When should I take EDLD 922–925?",
-    a: "Work with your dissertation chair to determine the best timing for taking EDLD 922–925. The course roadmap provides suggested schedules for both 4-year and 5-year plans, but your actual enrollment should be based on your research progress and your chair's guidance.",
+    a: "Work with your dissertation chair to determine the best timing for taking EDLD 922–925. The program roadmap provides suggested schedules for both 4-year and 5-year plans, but your actual enrollment should be based on your research progress and your chair's guidance.",
   },
   {
     q: "How do I form my dissertation committee?",
@@ -930,7 +930,7 @@ function FaqTab() {
 
 function QuickLinks({ go }) {
   const links = [
-    { label: "Course Roadmap", tab: "roadmap" },
+    { label: "Program Roadmap", tab: "roadmap" },
     { label: "Doctoral Milestones", tab: "milestones" },
     { label: "Dissertation Outline", tab: "dissertation" },
     { label: "Forms & Documents", tab: "forms" },
