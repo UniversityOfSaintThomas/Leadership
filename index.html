@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ed.D. in Educational Leadership and Learning | University of St. Thomas</title>
+  <meta name="description" content="Doctoral program guide for the Ed.D. in Educational Leadership and Learning at the University of St. Thomas School of Education." />
+
+  <!-- React 18 (production) from CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel: compiles the JSX in the browser -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Tailwind utility classes -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body { margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- The whole app. type="text/babel" tells Babel to compile it. -->
+  <script type="text/babel" data-presets="react">
+    const { useState, useMemo, useRef, useEffect } = React;
+
+
+
+/* =========================================================================
+   University of St. Thomas — Ed.D. in Educational Leadership and Learning
+   Doctoral Program Guide
+   Single-file React component. Tailwind core utilities only.
+   ========================================================================= */
+
+const PURPLE = "#582c83";       // UST primary purple
+const PURPLE_DARK = "#3d1d5c";
+const PURPLE_LIGHT = "#7a4fa3";
+const GRAY = "#54565a";         // UST gray
+const GRAY_LIGHT = "#f4f2f7";
+
+const TABS = [
+  { id: "overview", label: "Program Overview" },
+  { id: "roadmap", label: "Course Roadmap" },
+  { id: "residency", label: "Summer Residency" },
+  { id: "milestones", label: "Doctoral Milestones" },
+  { id: "dissertation", label: "Dissertation Resources" },
+  { id: "forms", label: "Forms & Documents" },
+  { id: "faq", label: "FAQ" },
+];
+
+/* ---------- Searchable content index (for the search function) ---------- */
+const SEARCH_INDEX = [
+  { tab: "overview", title: "Program Overview", text: "Ed.D. Educational Leadership and Learning 4-5 year journey 66 credits 45 core 21 elective welcome" },
+  { tab: "roadmap", title: "Course Roadmap — Four & Five Year Plans", text: "EDLD 916 917 918 919 889 904 902 920 921 905 922 923 924 925 915 dissertation hours residency electives timeline" },
+  { tab: "residency", title: "Summer Residency", text: "doctoral orientation May 16 2026 first-year residency July EDLD 916 917 second-year EDLD 889 in-person mandatory" },
+  { tab: "milestones", title: "Doctoral Milestones", text: "prospectus approval proposal defense dissertation defense committee terminal degrees double-blind review" },
+  { tab: "dissertation", title: "Dissertation Resources", text: "proposal defense agenda dissertation outline chapters introduction literature review methodology findings rubric table of contents APA" },
+  { tab: "forms", title: "Forms & Documents", text: "dissertation committee form proposal defense form CITI certification IRB Bridgette Smith" },
+  { tab: "faq", title: "Frequently Asked Questions", text: "dissertation topic prospectus proposal ABD committee defense presentation summer residency examples contact" },
+];
+
+/* ====================================================================== */
+/*  Small UI primitives                                                   */
+/* ====================================================================== */
+
+function SectionTitle({ kicker, children }) {
+  return (
+    <div className="mb-8">
+      {kicker && (
+        <div
+          className="text-xs font-semibold tracking-[0.25em] uppercase mb-2"
+          style={{ color: PURPLE_LIGHT }}
+        >
+          {kicker}
+        </div>
+      )}
+      <h2
+        className="text-3xl md:text-4xl font-bold leading-tight"
+        style={{ color: PURPLE_DARK, fontFamily: "Georgia, 'Times New Roman', serif" }}
+      >
+        {children}
+      </h2>
+      <div className="mt-4 h-1 w-20 rounded-full" style={{ background: PURPLE }} />
+    </div>
+  );
+}
+
+function Callout({ children, tone = "info" }) {
+  const tones = {
+    info: { bg: "#f0ebf7", border: PURPLE, icon: "ℹ️" },
+    warn: { bg: "#fdf3e7", border: "#c9762b", icon: "⚠️" },
+  };
+  const t = tones[tone];
+  return (
+    <div
+      className="rounded-lg p-4 my-4 text-sm leading-relaxed flex gap-3"
+      style={{ background: t.bg, borderLeft: `4px solid ${t.border}`, color: GRAY }}
+    >
+      <span className="select-none">{t.icon}</span>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+function Accordion({ title, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border rounded-xl overflow-hidden mb-3" style={{ borderColor: "#e2dced" }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors"
+        style={{ background: open ? GRAY_LIGHT : "white", color: PURPLE_DARK }}
+      >
+        <span className="font-semibold text-base md:text-lg">{title}</span>
+        <span
+          className="text-xl transition-transform duration-300 shrink-0 ml-4"
+          style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)", color: PURPLE }}
+        >
+          +
+        </span>
+      </button>
+      <div
+        className="transition-all duration-300 ease-in-out overflow-hidden"
+        style={{ maxHeight: open ? "4000px" : "0px" }}
+      >
+        <div className="px-5 py-4 text-sm md:text-[15px] leading-relaxed" style={{ color: GRAY }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  TAB 1 — Program Overview                                              */
+/* ====================================================================== */
+
+function OverviewTab() {
+  const stats = [
+    { num: "66", label: "Total Credits" },
+    { num: "45", label: "Core Credits" },
+    { num: "21", label: "Elective Credits" },
+    { num: "4–5", label: "Year Journey" },
+  ];
+  return (
+    <div>
+      <SectionTitle kicker="Welcome">
+        Ed.D. in Educational Leadership and Learning
+      </SectionTitle>
+
+      <p className="text-lg leading-relaxed mb-6" style={{ color: GRAY }}>
+        Welcome to your doctoral journey at the University of St. Thomas School of
+        Education. This program prepares scholar-practitioners to lead with vision,
+        equity, and evidence. Whether you complete the degree in four or five years,
+        this guide is designed to bring clarity to every milestone — from your first
+        summer residency to the moment you defend your dissertation.
+      </p>
+
+      <p className="text-lg leading-relaxed mb-8" style={{ color: GRAY }}>
+        Over the next <strong>four to five years</strong>, you'll move through a
+        carefully sequenced path of coursework, research methods, and dissertation
+        work — building the skills and confidence to make an original contribution to
+        the field.
+      </p>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        {stats.map((s) => (
+          <div
+            key={s.label}
+            className="rounded-xl p-6 text-center"
+            style={{ background: PURPLE, color: "white" }}
+          >
+            <div className="text-4xl font-bold" style={{ fontFamily: "Georgia, serif" }}>
+              {s.num}
+            </div>
+            <div className="text-xs uppercase tracking-wider mt-2 opacity-90">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <a
+        href="https://education.stthomas.edu/leadership-degrees-licensures/post-graduate-studies/ed-d-educational-leadership-learning/index.html"
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold text-white transition-transform hover:scale-[1.02]"
+        style={{ background: PURPLE_DARK }}
+      >
+        Visit the Main Program Page →
+      </a>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  TAB 2 — Course Roadmap                                                */
+/* ====================================================================== */
+
+const FOUR_YEAR = [
+  {
+    year: "Year 1",
+    terms: [
+      { term: "Summer", residency: true, courses: ["EDLD 916 — Education Leaders and Learners", "EDLD 917 — Scholars and Researchers in Education"] },
+      { term: "Fall", courses: ["EDLD 918 — Social and Cultural Foundations of Education", "Optional Elective"] },
+      { term: "J-term", courses: ["Optional Elective"] },
+      { term: "Spring", courses: ["EDLD 919 — Leadership for Social Justice in Education", "Optional Elective"] },
+    ],
+  },
+  {
+    year: "Year 2",
+    terms: [
+      { term: "Summer", residency: true, courses: ["EDLD 889 — Research Paradigms in Education", "Optional Elective"] },
+      { term: "Fall", courses: ["EDLD 904 — Qualitative Research Methods", "Optional Elective"] },
+      { term: "J-term", courses: ["Optional Elective"] },
+      { term: "Spring", courses: ["EDLD 902 — Quantitative Research Methods", "Optional Elective"] },
+    ],
+  },
+  {
+    year: "Year 3",
+    terms: [
+      { term: "Summer", courses: ["EDLD 920 — Framing a Research Study"] },
+      { term: "Fall", courses: ["EDLD 921 — Dissertation Proposal Design"] },
+      { term: "J-term", courses: ["Optional Elective"] },
+      { term: "Spring", courses: ["EDLD 905 — Analysis of Research Data", "Optional Elective", "EDLD 922 — Dissertation Hours"] },
+    ],
+  },
+  {
+    year: "Year 4",
+    terms: [
+      { term: "Summer", courses: ["No courses"] },
+      { term: "Fall", courses: ["EDLD 915 — Leadership Narratives Seminar", "EDLD 923 — Dissertation Hours"] },
+      { term: "J-term", courses: ["No courses"] },
+      { term: "Spring", courses: ["EDLD 924 — Dissertation Hours", "EDLD 925 — Dissertation Defense"], grad: true },
+    ],
+  },
+];
+
+const FIVE_YEAR = [
+  {
+    year: "Year 1",
+    terms: [
+      { term: "Summer", residency: true, courses: ["EDLD 916 — Education Leaders and Learners", "EDLD 917 — Scholars and Researchers in Education"] },
+      { term: "Fall", courses: ["EDLD 918 — Social and Cultural Foundations of Education", "Optional Elective"] },
+      { term: "J-term", courses: ["Optional Elective"] },
+      { term: "Spring", courses: ["EDLD 919 — Leadership for Social Justice in Education"] },
+    ],
+  },
+  {
+    year: "Year 2",
+    terms: [
+      { term: "Summer", residency: true, courses: ["EDLD 889 — Research Paradigms in Education", "Optional Elective"] },
+      { term: "Fall", courses: ["EDLD 904 — Qualitative Research Methods", "Optional Elective"] },
+      { term: "J-term", courses: ["Optional Elective"] },
+      { term: "Spring", courses: ["EDLD 902 — Quantitative Research Methods"] },
+    ],
+  },
+  {
+    year: "Year 3",
+    terms: [
+      { term: "Summer", courses: ["EDLD 920 — Framing a Research Study", "Optional Elective"] },
+      { term: "Fall", courses: ["EDLD 921 — Dissertation Proposal Design", "Optional Elective"] },
+      { term: "J-term", courses: ["No courses"] },
+      { term: "Spring", courses: ["EDLD 905 — Analysis of Research Data"] },
+    ],
+  },
+  {
+    year: "Year 4",
+    terms: [
+      { term: "Summer", courses: ["No courses"] },
+      { term: "Fall", courses: ["EDLD 922 — Dissertation Hours", "EDLD 915 — Leadership Narratives Seminar"] },
+      { term: "J-term", courses: ["No courses"] },
+      { term: "Spring", courses: ["EDLD 923 — Dissertation Hours"] },
+    ],
+  },
+  {
+    year: "Year 5",
+    terms: [
+      { term: "Summer", courses: ["No courses"] },
+      { term: "Fall", courses: ["EDLD 924 — Dissertation Hours"] },
+      { term: "J-term", courses: ["No courses"] },
+      { term: "Spring", courses: ["EDLD 925 — Dissertation Defense"], grad: true },
+    ],
+  },
+];
+
+function isEmpty(courses) {
+  return courses.length === 1 && courses[0] === "No courses";
+}
+
+function TermCard({ term }) {
+  const empty = isEmpty(term.courses);
+  return (
+    <div
+      className="rounded-lg p-4 border h-full"
+      style={{
+        borderColor: term.residency ? PURPLE : "#e2dced",
+        background: term.residency ? "#f0ebf7" : empty ? "#fafafa" : "white",
+      }}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: PURPLE }}>
+          {term.term}
+        </span>
+        {term.residency && (
+          <span
+            className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+            style={{ background: PURPLE }}
+          >
+            RESIDENCY
+          </span>
+        )}
+        {term.grad && (
+          <span
+            className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+            style={{ background: "#2e7d32" }}
+          >
+            🎓 GRADUATION
+          </span>
+        )}
+      </div>
+      <ul className="space-y-1.5">
+        {term.courses.map((c, i) => (
+          <li
+            key={i}
+            className={`text-[13px] leading-snug ${empty ? "italic" : ""}`}
+            style={{ color: empty ? "#aaa" : GRAY }}
+          >
+            {!empty && c.startsWith("Optional") ? "○ " : !empty ? "● " : ""}
+            {c}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function PlanTimeline({ plan }) {
+  return (
+    <div className="space-y-6">
+      {plan.map((y) => (
+        <div key={y.year}>
+          <div className="flex items-center gap-3 mb-3">
+            <div
+              className="text-white font-bold text-sm px-4 py-1.5 rounded-full"
+              style={{ background: PURPLE_DARK }}
+            >
+              {y.year}
+            </div>
+            <div className="flex-1 h-px" style={{ background: "#e2dced" }} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {y.terms.map((t) => (
+              <TermCard key={t.term} term={t} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RoadmapTab() {
+  const [plan, setPlan] = useState("four");
+  return (
+    <div>
+      <SectionTitle kicker="Course Roadmap">Your Academic Journey</SectionTitle>
+
+      <Callout tone="info">
+        Both 4-year and 5-year plans are available. Choose the pace that works best for
+        your professional and personal commitments.
+      </Callout>
+
+      <div className="flex gap-2 my-6">
+        {[
+          { id: "four", label: "Four-Year Plan" },
+          { id: "five", label: "Five-Year Plan" },
+        ].map((p) => (
+          <button
+            key={p.id}
+            onClick={() => setPlan(p.id)}
+            className="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all"
+            style={{
+              background: plan === p.id ? PURPLE : "white",
+              color: plan === p.id ? "white" : GRAY,
+              border: `1.5px solid ${plan === p.id ? PURPLE : "#e2dced"}`,
+            }}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap gap-4 mb-6 text-xs" style={{ color: GRAY }}>
+        <span>● Required course</span>
+        <span>○ Optional elective</span>
+        <span style={{ color: PURPLE }}>■ In-person residency</span>
+      </div>
+
+      <PlanTimeline plan={plan === "four" ? FOUR_YEAR : FIVE_YEAR} />
+
+      <Callout tone="warn">
+        <strong>Important:</strong> Scholars should work with their dissertation chair to
+        determine when to take EDLD 922–925. The schedule above is a suggestion.
+      </Callout>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  TAB 3 — Summer Residency                                              */
+/* ====================================================================== */
+
+function ResidencyTab() {
+  const items = [
+    {
+      title: "Doctoral Orientation",
+      rows: [
+        ["When", "Third or Fourth Saturday of May (May 16, 2026: 9:00 AM – 12:00 PM)"],
+        ["Format", "Virtual"],
+        ["Who", "All incoming doctoral students"],
+      ],
+      accent: GRAY,
+    },
+    {
+      title: "First-Year Residency",
+      rows: [
+        ["When", "Third week of July"],
+        ["Courses", "EDLD 916 & EDLD 917"],
+        ["Location", "University of St. Thomas campus"],
+        ["Format", "In-person, full week intensive"],
+      ],
+      accent: PURPLE,
+    },
+    {
+      title: "Second-Year Residency",
+      rows: [
+        ["When", "Fourth week of July"],
+        ["Course", "EDLD 889"],
+        ["Location", "University of St. Thomas campus"],
+        ["Format", "In-person, full week intensive"],
+      ],
+      accent: PURPLE,
+    },
+  ];
+  return (
+    <div>
+      <SectionTitle kicker="Summer Residency">In-Person Summer Residencies</SectionTitle>
+
+      <div className="space-y-5">
+        {items.map((it) => (
+          <div
+            key={it.title}
+            className="rounded-xl border overflow-hidden"
+            style={{ borderColor: "#e2dced" }}
+          >
+            <div
+              className="px-5 py-3 font-bold text-white text-lg"
+              style={{ background: it.accent, fontFamily: "Georgia, serif" }}
+            >
+              {it.title}
+            </div>
+            <table className="w-full text-sm">
+              <tbody>
+                {it.rows.map(([k, v], i) => (
+                  <tr key={k} style={{ background: i % 2 ? "#fafafa" : "white" }}>
+                    <td
+                      className="px-5 py-3 font-semibold align-top w-28"
+                      style={{ color: PURPLE_DARK }}
+                    >
+                      {k}
+                    </td>
+                    <td className="px-5 py-3" style={{ color: GRAY }}>
+                      {v}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+      </div>
+
+      <Callout tone="info">
+        Summer residencies are mandatory and provide intensive learning experiences,
+        networking opportunities, and community building with cohort members.
+      </Callout>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  TAB 4 — Doctoral Milestones                                           */
+/* ====================================================================== */
+
+function MilestonesTab() {
+  const milestones = [
+    {
+      n: 1,
+      title: "Prospectus Approval",
+      when: "Year 3",
+      body: (
+        <>
+          <p className="mb-2">Completed in <strong>EDLD 920 (Framing a Research Study)</strong>.</p>
+          <p className="mb-2">
+            <strong>Components:</strong> A prospectus consisting of the problem statement,
+            research questions, theoretical framework, and methodology overview.
+          </p>
+          <p className="mb-2">The prospectus undergoes a double-blind review process.</p>
+          <Callout tone="warn">
+            <strong>Important:</strong> Students cannot enroll in EDLD 921 (Dissertation
+            Proposal Design) until the prospectus is approved.
+          </Callout>
+        </>
+      ),
+    },
+    {
+      n: 2,
+      title: "Dissertation Proposal Defense",
+      when: "Year 3",
+      body: (
+        <>
+          <p className="mb-2">Completed during or after <strong>EDLD 921</strong>.</p>
+          <p className="mb-2">
+            A formal defense of the first three chapters: Introduction, Literature Review,
+            and Methodology.
+          </p>
+          <p className="mb-2">
+            <strong>Committee composition:</strong> Minimum of 3 members with terminal
+            degrees (chair + 2 members).
+          </p>
+          <Callout tone="warn">
+            <strong>Important:</strong> Students cannot enroll in dissertation credit
+            courses (EDLD 922–925) until they successfully pass the proposal defense.
+          </Callout>
+        </>
+      ),
+    },
+    {
+      n: 3,
+      title: "Dissertation Defense",
+      when: "Years 4–5",
+      body: (
+        <>
+          <p className="mb-2">Final defense of the complete dissertation (all chapters).</p>
+          <p className="mb-2">Presentation of research findings.</p>
+          <p className="mb-2">
+            The committee evaluates the contribution to the field and scholarly rigor.
+          </p>
+          <p>
+            Upon successful defense and final manuscript submission, the doctoral degree
+            is awarded. 🎓
+          </p>
+        </>
+      ),
+    },
+  ];
+  return (
+    <div>
+      <SectionTitle kicker="Doctoral Milestones">Three Milestones</SectionTitle>
+
+      <div className="relative">
+        <div
+          className="absolute left-[22px] top-4 bottom-4 w-0.5 hidden md:block"
+          style={{ background: "#e2dced" }}
+        />
+        <div className="space-y-6">
+          {milestones.map((m) => (
+            <div key={m.n} className="md:flex gap-6">
+              <div className="shrink-0 mb-3 md:mb-0">
+                <div
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-lg relative z-10"
+                  style={{ background: PURPLE }}
+                >
+                  {m.n}
+                </div>
+              </div>
+              <div
+                className="flex-1 rounded-xl border p-5"
+                style={{ borderColor: "#e2dced", background: "white" }}
+              >
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <h3
+                    className="text-xl font-bold"
+                    style={{ color: PURPLE_DARK, fontFamily: "Georgia, serif" }}
+                  >
+                    {m.title}
+                  </h3>
+                  <span
+                    className="text-xs font-semibold px-3 py-1 rounded-full"
+                    style={{ background: GRAY_LIGHT, color: PURPLE }}
+                  >
+                    {m.when}
+                  </span>
+                </div>
+                <div className="text-sm leading-relaxed" style={{ color: GRAY }}>
+                  {m.body}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  TAB 5 — Dissertation Resources                                        */
+/* ====================================================================== */
+
+function DissertationTab() {
+  const agenda = (last) => (
+    <ul className="space-y-1.5 list-disc pl-5">
+      <li>Welcome and introductions (5 minutes)</li>
+      <li>Candidate presentation (15 minutes)</li>
+      <li>Committee questions and discussion (50 minutes)</li>
+      <li>Closed deliberation (candidate excused, 10 minutes)</li>
+      <li>{last}</li>
+    </ul>
+  );
+
+  return (
+    <div>
+      <SectionTitle kicker="Dissertation Resources">Resources & Guides</SectionTitle>
+
+      <Accordion title="Section A — Preparing for Proposal Defense" defaultOpen>
+        <p className="font-semibold mb-2" style={{ color: PURPLE_DARK }}>Agenda</p>
+        {agenda("Decision and feedback (10 minutes)")}
+        <p className="mt-3">
+          <strong>Possible outcomes:</strong> Approved · Approved with modifications · Not approved
+        </p>
+      </Accordion>
+
+      <Accordion title="Section B — Preparing for Dissertation Defense">
+        <p className="font-semibold mb-2" style={{ color: PURPLE_DARK }}>Agenda</p>
+        {agenda("Decision and celebration (10 minutes) 🎉")}
+      </Accordion>
+
+      <Accordion title="Section C — Dissertation Proposal Outline">
+        <div className="space-y-4">
+          <div>
+            <p className="font-semibold" style={{ color: PURPLE_DARK }}>Chapter 1: Introduction</p>
+            <ul className="list-disc pl-5 mt-1">
+              <li>Problem statement</li>
+              <li>Purpose and significance</li>
+              <li>Research questions</li>
+              <li>Theoretical/conceptual framework</li>
+              <li>Definition of terms</li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-semibold" style={{ color: PURPLE_DARK }}>Chapter 2: Literature Review</p>
+            <ul className="list-disc pl-5 mt-1">
+              <li>Thematic organization of relevant scholarship</li>
+              <li>Gaps in existing research</li>
+              <li>Connection to research questions</li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-semibold" style={{ color: PURPLE_DARK }}>Chapter 3: Methodology</p>
+            <ul className="list-disc pl-5 mt-1">
+              <li>Research paradigm</li>
+              <li>Methodology and approach</li>
+              <li>IRB approval and CITI certification</li>
+              <li>Participant recruitment and selection</li>
+              <li>Data collection methods</li>
+              <li>Data analysis procedures</li>
+              <li>Researcher positionality and reflexivity</li>
+            </ul>
+          </div>
+        </div>
+      </Accordion>
+
+      <Accordion title="Section D — Dissertation Outline (Full)">
+        <div className="space-y-4">
+          <p className="italic">Chapters 1–2 (revised from proposal)</p>
+
+          <div>
+            <p className="font-semibold" style={{ color: PURPLE_DARK }}>Chapter Three: Methodology (revision)</p>
+            <ul className="list-disc pl-5 mt-1 space-y-1">
+              <li>Chapter introduction previewing the contents and organization of the chapter</li>
+              <li>Paradigm</li>
+              <li>Methodology</li>
+              <li>Approach</li>
+              <li>Institutional Review Board (reference the CITI certificate to demonstrate researcher qualification)</li>
+              <li>
+                Recruitment and Selection of Participants
+                <ul className="list-[circle] pl-5 mt-1">
+                  <li>Add participants (e.g., brief description, demographic table such as pseudonym, gender, age range, professional experiences, etc.)</li>
+                  <li>Describe recruitment strategies in detail (e.g., if using snowball sampling, how did your "snowball" develop? How many potential participants indicated interest, and how many eventually participated?)</li>
+                </ul>
+              </li>
+              <li>Data collection</li>
+              <li>Data analysis: provide a detailed description of your analysis (or analyses) in past tense</li>
+              <li>Ethical Considerations</li>
+              <li>Validity and Reliability</li>
+              <li>Researcher Experience and Bias (Reflexive Statement)</li>
+              <li>Remove the timetable developed in the proposal</li>
+              <li>Chapter Summary</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-semibold" style={{ color: PURPLE_DARK }}>Chapter Four: Findings</p>
+            <ul className="list-disc pl-5 mt-1 space-y-1">
+              <li>Chapter introduction previewing the contents and organization of the chapter</li>
+              <li>Report the findings using the actual data from the data collection section</li>
+              <li>Address each research question</li>
+              <li>
+                Quantitative:
+                <ul className="list-[circle] pl-5 mt-1">
+                  <li>Provide a detailed description of quantitative results/findings</li>
+                  <li>Use tables for statistical findings</li>
+                </ul>
+              </li>
+              <li>
+                Qualitative:
+                <ul className="list-[circle] pl-5 mt-1">
+                  <li>Identify themes with representative quotes that account for all participants (judicious use of quotes at the discretion of the chair)</li>
+                  <li>Use figures and charts to illustrate the main findings</li>
+                </ul>
+              </li>
+              <li>Chapter Summary</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-semibold" style={{ color: PURPLE_DARK }}>Chapter Five: Theoretical Analysis and Discussion of Findings</p>
+            <ul className="list-disc pl-5 mt-1 space-y-1">
+              <li>Chapter introduction previewing the contents and organization of the chapter</li>
+              <li>Use specific components of the analytical theories (or their definitions) to analyze your findings</li>
+              <li>Discuss connections between the theories and findings</li>
+              <li>Discuss how the study bridges the gap in the literature and aligns with or challenges prior studies</li>
+              <li>Avoid excessive use of quotes or block quotes</li>
+              <li>Chapter Summary</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-semibold" style={{ color: PURPLE_DARK }}>Chapter Six: Summary, Implications, and Recommendations</p>
+            <ul className="list-disc pl-5 mt-1 space-y-1">
+              <li>Summary of study and findings (no more than one or two pages)</li>
+              <li>
+                Implications:
+                <ul className="list-[circle] pl-5 mt-1">
+                  <li>How the study results may impact participants</li>
+                  <li>Restate the significance</li>
+                  <li>Generalization of findings</li>
+                  <li>So what?</li>
+                </ul>
+              </li>
+              <li>
+                Recommendations:
+                <ul className="list-[circle] pl-5 mt-1">
+                  <li>Now what?</li>
+                  <li>For policy-makers/leaders in the field</li>
+                  <li>For future studies</li>
+                </ul>
+              </li>
+              <li>Limitations of the study</li>
+              <li>Closing thoughts</li>
+            </ul>
+          </div>
+        </div>
+      </Accordion>
+
+      <Accordion title="Section E — Dissertation Rubric">
+        <p className="mb-2">Evaluation criteria include:</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Scholarly writing and APA format</li>
+          <li>Problem statement clarity and significance</li>
+          <li>Literature review depth and synthesis</li>
+          <li>Methodological rigor and alignment</li>
+          <li>Data analysis quality</li>
+          <li>Contribution to field</li>
+          <li>Implications and recommendations</li>
+        </ul>
+        <a
+          href="#"
+          className="inline-block mt-3 font-semibold underline"
+          style={{ color: PURPLE }}
+        >
+          Open the full rubric →
+        </a>
+      </Accordion>
+
+      <Accordion title="Section F — Creating a Table of Contents">
+        <div className="rounded-lg overflow-hidden mb-4" style={{ aspectRatio: "16/9", maxWidth: 560 }}>
+          <iframe
+            className="w-full h-full"
+            src="https://www.youtube.com/embed/WqM6-yz89X8"
+            title="Creating a Table of Contents"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{ border: 0 }}
+          />
+        </div>
+        <p className="mb-2 font-semibold" style={{ color: PURPLE_DARK }}>Step-by-step (Microsoft Word):</p>
+        <ol className="list-decimal pl-5 space-y-1">
+          <li>Apply Heading 1 / Heading 2 styles to your chapter and section titles.</li>
+          <li>Place your cursor where the TOC should appear.</li>
+          <li>Go to <em>References → Table of Contents</em> and choose an automatic style.</li>
+          <li>Insert page numbers via <em>Insert → Page Number</em>, then format front matter with lowercase roman numerals.</li>
+          <li>Right-click the TOC and select <em>Update Field</em> whenever headings change.</li>
+        </ol>
+        <p className="mt-3">All formatting should follow <strong>APA 7th edition</strong> requirements.</p>
+      </Accordion>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  TAB 6 — Forms & Documents                                             */
+/* ====================================================================== */
+
+function FormsTab() {
+  const forms = [
+    { name: "Dissertation Committee Form", note: "Appendix from handbook" },
+    { name: "Proposal Defense Form", note: "Appendix from handbook" },
+    { name: "Dissertation Defense Form", note: "Appendix from handbook" },
+    { name: "CITI Certification Information", note: "Training & verification" },
+    { name: "IRB Application Guidelines", note: "Human subjects review" },
+  ];
+  return (
+    <div>
+      <SectionTitle kicker="Forms & Documents">Downloads & Resources</SectionTitle>
+
+      <div className="grid sm:grid-cols-2 gap-4">
+        {forms.map((f) => (
+          <a
+            key={f.name}
+            href="#"
+            className="flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-md"
+            style={{ borderColor: "#e2dced", background: "white" }}
+          >
+            <div
+              className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 text-white text-lg"
+              style={{ background: PURPLE }}
+            >
+              ↓
+            </div>
+            <div>
+              <div className="font-semibold" style={{ color: PURPLE_DARK }}>{f.name}</div>
+              <div className="text-xs" style={{ color: GRAY }}>{f.note}</div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <Callout tone="info">
+        Contact <strong>Bridgette Smith</strong> (
+        <a href="mailto:bridgette.smith@stthomas.edu" className="underline" style={{ color: PURPLE }}>
+          bridgette.smith@stthomas.edu
+        </a>
+        ) for assistance with forms and signatures.
+      </Callout>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  TAB 7 — FAQ                                                           */
+/* ====================================================================== */
+
+const FAQ = [
+  {
+    q: "When should I start thinking about my dissertation topic?",
+    a: "Begin exploring potential topics during EDLD 889 (Research Paradigms in Education) in Year 2. By EDLD 920 (Framing a Research Study) in Year 3, you'll develop your prospectus with a focused research question.",
+  },
+  {
+    q: "What is the difference between a prospectus, proposal, and dissertation?",
+    a: "A prospectus (Milestone 1) is a brief overview of your planned research completed in EDLD 920. A proposal (Milestone 2) includes the first three chapters (Introduction, Literature Review, Methodology) and is defended in EDLD 921. The dissertation (Milestone 3) is your complete research study with all chapters, including your findings and analysis.",
+  },
+  {
+    q: "Can I take dissertation courses before defending my proposal?",
+    a: "No. You must successfully pass your dissertation proposal defense before enrolling in dissertation credit courses (EDLD 922–925). Similarly, you cannot enroll in EDLD 921 until your prospectus is approved.",
+  },
+  {
+    q: "When should I take EDLD 922–925?",
+    a: "Work with your dissertation chair to determine the best timing for taking EDLD 922–925. The course roadmap provides suggested schedules for both 4-year and 5-year plans, but your actual enrollment should be based on your research progress and your chair's guidance.",
+  },
+  {
+    q: "How do I form my dissertation committee?",
+    a: "Your committee must include a minimum of 3 members with terminal degrees: a chair and at least 2 additional members. Work with your advisor and program director to identify faculty whose expertise aligns with your research topic. Use the Dissertation Committee Form available in the Forms & Documents tab.",
+  },
+  {
+    q: "What happens if I don't pass my proposal or dissertation defense?",
+    a: "Possible outcomes include: Approved, Approved with modifications, or Not approved. If modifications are needed, your committee will provide specific guidance. If not approved, you'll work with your chair to address concerns before rescheduling.",
+  },
+  {
+    q: "How long is the defense presentation?",
+    a: "You have 15 minutes to present during both your proposal defense and dissertation defense. The committee will then ask questions for approximately 50 minutes.",
+  },
+  {
+    q: "Are summer residencies required?",
+    a: "Yes, both summer residencies are mandatory. First-year students attend during the third week of July (EDLD 916/917), and second-year students attend during the fourth week of July (EDLD 889).",
+  },
+  {
+    q: "What is ABD status?",
+    a: "ABD stands for \"All But Dissertation.\" You achieve this status after successfully defending your dissertation proposal and completing all required coursework with satisfactory grades (B- and above).",
+  },
+  {
+    q: "Can I see examples of completed dissertations?",
+    a: "Yes! Visit the UST Library to access a collection of completed dissertations from our program. This can help you understand expectations and explore diverse research topics.",
+  },
+  {
+    q: "Who do I contact if I have questions about forms or procedures?",
+    a: "Contact Bridgette Smith (bridgette.smith@stthomas.edu) for assistance with forms and administrative procedures. For academic guidance, reach out to Program Director Dr. Chientzu Candace Chou (ccchou@stthomas.edu).",
+  },
+];
+
+function FaqTab() {
+  return (
+    <div>
+      <SectionTitle kicker="FAQ">Frequently Asked Questions</SectionTitle>
+      {FAQ.map((f, i) => (
+        <Accordion key={i} title={f.q} defaultOpen={i === 0}>
+          <p>{f.a}</p>
+        </Accordion>
+      ))}
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  Quick Links sidebar                                                   */
+/* ====================================================================== */
+
+function QuickLinks({ go }) {
+  const links = [
+    { label: "Course Roadmap", tab: "roadmap" },
+    { label: "Doctoral Milestones", tab: "milestones" },
+    { label: "Dissertation Outline", tab: "dissertation" },
+    { label: "Forms & Documents", tab: "forms" },
+    { label: "Summer Residency Dates", tab: "residency" },
+  ];
+  return (
+    <div className="rounded-xl border p-5" style={{ borderColor: "#e2dced", background: "white" }}>
+      <div className="text-xs font-bold uppercase tracking-[0.2em] mb-4" style={{ color: PURPLE_LIGHT }}>
+        Quick Links
+      </div>
+      <ul className="space-y-2">
+        {links.map((l) => (
+          <li key={l.tab}>
+            <button
+              onClick={() => go(l.tab)}
+              className="text-left text-sm w-full flex items-center gap-2 group"
+              style={{ color: GRAY }}
+            >
+              <span style={{ color: PURPLE }}>›</span>
+              <span className="group-hover:underline">{l.label}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-5 pt-4 border-t text-xs" style={{ borderColor: "#e2dced", color: GRAY }}>
+        <div className="font-semibold mb-1" style={{ color: PURPLE_DARK }}>Need help?</div>
+        <a href="mailto:bridgette.smith@stthomas.edu" className="underline block" style={{ color: PURPLE }}>
+          bridgette.smith@stthomas.edu
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  Root                                                                  */
+/* ====================================================================== */
+
+function App() {
+  const [active, setActive] = useState("overview");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
+  const contentRef = useRef(null);
+
+  const go = (tab) => {
+    setActive(tab);
+    setMenuOpen(false);
+    setShowResults(false);
+    setQuery("");
+    if (contentRef.current) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return SEARCH_INDEX.filter(
+      (s) => s.title.toLowerCase().includes(q) || s.text.toLowerCase().includes(q)
+    );
+  }, [query]);
+
+  const renderTab = () => {
+    switch (active) {
+      case "overview": return <OverviewTab />;
+      case "roadmap": return <RoadmapTab />;
+      case "residency": return <ResidencyTab />;
+      case "milestones": return <MilestonesTab />;
+      case "dissertation": return <DissertationTab />;
+      case "forms": return <FormsTab />;
+      case "faq": return <FaqTab />;
+      default: return <OverviewTab />;
+    }
+  };
+
+  return (
+    <div style={{ background: GRAY_LIGHT, minHeight: "100vh", fontFamily: "'Helvetica Neue', Arial, sans-serif" }}>
+      {/* ---------- Header ---------- */}
+      <header style={{ background: PURPLE_DARK }} className="text-white">
+        <div className="max-w-6xl mx-auto px-5 py-5 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Logo mark */}
+            <div
+              className="w-11 h-11 rounded-lg flex items-center justify-center font-bold text-lg shrink-0"
+              style={{ background: "white", color: PURPLE_DARK, fontFamily: "Georgia, serif" }}
+            >
+              St
+            </div>
+            <div className="min-w-0">
+              <div className="font-bold leading-tight truncate" style={{ fontFamily: "Georgia, serif" }}>
+                University of St. Thomas
+              </div>
+              <div className="text-xs opacity-80 truncate">School of Education · Doctoral Program</div>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="relative hidden sm:block">
+            <input
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setShowResults(true); }}
+              onFocus={() => setShowResults(true)}
+              placeholder="Search the guide…"
+              className="rounded-full px-4 py-2 text-sm w-56 outline-none"
+              style={{ background: "rgba(255,255,255,0.15)", color: "white" }}
+            />
+            {showResults && results.length > 0 && (
+              <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl overflow-hidden z-50">
+                {results.map((r) => (
+                  <button
+                    key={r.tab}
+                    onClick={() => go(r.tab)}
+                    className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-50 border-b last:border-0"
+                    style={{ color: GRAY, borderColor: "#eee" }}
+                  >
+                    <span className="font-semibold" style={{ color: PURPLE_DARK }}>{r.title}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {showResults && query && results.length === 0 && (
+              <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl px-4 py-3 text-sm z-50" style={{ color: GRAY }}>
+                No matches found.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ---------- Nav ---------- */}
+        <nav style={{ background: PURPLE }}>
+          <div className="max-w-6xl mx-auto px-5">
+            {/* Mobile toggle */}
+            <button
+              className="md:hidden w-full text-left py-3 font-semibold flex items-center justify-between"
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              {TABS.find((t) => t.id === active)?.label}
+              <span>{menuOpen ? "▲" : "▼"}</span>
+            </button>
+            <ul className={`md:flex gap-1 ${menuOpen ? "block pb-3" : "hidden md:flex"}`}>
+              {TABS.map((t) => (
+                <li key={t.id}>
+                  <button
+                    onClick={() => go(t.id)}
+                    className="px-4 py-3 text-sm font-medium transition-colors block w-full text-left whitespace-nowrap"
+                    style={{
+                      color: "white",
+                      borderBottom: active === t.id ? "3px solid white" : "3px solid transparent",
+                      background: active === t.id ? "rgba(255,255,255,0.12)" : "transparent",
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+      {/* ---------- Body ---------- */}
+      <main ref={contentRef} className="max-w-6xl mx-auto px-5 py-10">
+        <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-8 items-start">
+          <div
+            className="rounded-2xl bg-white p-6 md:p-10 shadow-sm"
+            style={{ animation: "fade 0.4s ease" }}
+            key={active}
+          >
+            {renderTab()}
+          </div>
+          <aside className="mt-8 lg:mt-0 lg:sticky lg:top-6">
+            <QuickLinks go={go} />
+          </aside>
+        </div>
+      </main>
+
+      {/* ---------- Footer ---------- */}
+      <footer style={{ background: PURPLE_DARK }} className="text-white mt-8">
+        <div className="max-w-6xl mx-auto px-5 py-8 text-sm">
+          <div className="font-bold mb-2" style={{ fontFamily: "Georgia, serif" }}>
+            Ed.D. in Educational Leadership and Learning
+          </div>
+          <p className="opacity-80 mb-3">University of St. Thomas · School of Education</p>
+          <p className="opacity-90">
+            Program Director: Dr. Chientzu Candace Chou ·{" "}
+            <a href="mailto:ccchou@stthomas.edu" className="underline">ccchou@stthomas.edu</a>
+          </p>
+          <p className="opacity-60 text-xs mt-4">
+            This guide is designed to support and encourage you throughout your doctoral journey.
+          </p>
+        </div>
+      </footer>
+
+      <style>{`
+        @keyframes fade {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        input::placeholder { color: rgba(255,255,255,0.7); }
+      `}</style>
+    </div>
+  );
+}
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
